@@ -1,4 +1,4 @@
-#MUST OPTIMIZE!!!
+#i will fix it! :D
 
 
 def list_to_string(t):
