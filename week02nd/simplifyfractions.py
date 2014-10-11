@@ -39,5 +39,3 @@ def simplify_fraction(fraction):
             else:
                 return tuple(fraction)
     return tuple(fraction)
-
-print (simplify_fraction((4, 10)))
