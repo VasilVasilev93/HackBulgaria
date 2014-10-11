@@ -13,5 +13,3 @@ def iterations_of_nan_expand(expanded):
                 return False
         nan1 += k
     return count
-
-print (iterations_of_nan_expand("Show these people!"))
