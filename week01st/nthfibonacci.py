@@ -6,8 +6,10 @@ def nth_fibonacci(n):
     else:
         first = 1
         second = 1
-        for k in range(0, n):
+        for k in range(0, n - 2):
             next = first + second
             first = second
             second = next
         return next
+
+print (nth_fibonacci(10))
