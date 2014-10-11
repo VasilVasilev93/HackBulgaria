@@ -1,4 +1,3 @@
-
 def is_prime(n):
     n = abs(n)
     if n == 1:
