@@ -1,7 +1,9 @@
+#not sure about this
+
+
 def magic_square(matrix):
     sumofrows = []
     sumofcolumns = []
-    count = 0
     msize = len(matrix)
     for row in range(0, msize):
         sumrow = 0
@@ -13,14 +15,18 @@ def magic_square(matrix):
         sumofcolumns.append(sumcolumn)
 
     for k in range(0, msize - 1):
-        if sumofrows[k] == sumofrows[k + 1]:
-            count += 1
+        if sumofrows[k] != sumofrows[k + 1]:
+            return False
 
-    if sumofcolumns == sumofrows:
-        count += 1
-    if count == msize:
-        return True
-    return False
+    sumdiag = 0
+    sumrevdiag = 0
+    for i in range(len(matrix)):
+        sumdiag += matrix[i][i]
+        sumrevdiag += list(reversed(matrix))[i][i]
+    if sumdiag != sumrevdiag:
+        return False
+
+    return True
 
 print (magic_square([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
 print (magic_square([[4, 9, 2], [3, 5, 7], [8, 1, 6]]))
