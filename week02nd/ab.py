@@ -19,4 +19,4 @@ def is_an_bn(word):
         return True
     return False
 
-print (is_an_bn("bbbaaa"))
+print (is_an_bn("aaabbb"))

@@ -27,5 +27,3 @@ def goldbach(n):
                 primeaddends.append(tuple(primetuple))
                 primetuple = []
     return primeaddends
-
-print (goldbach(100))

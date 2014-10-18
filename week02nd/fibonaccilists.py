@@ -11,6 +11,3 @@ def nth_fib_lists(listA, listB, n):
             first = second
             second = nextfib
         return nextfib
-
-print (nth_fib_lists([1, 2], [1, 3], 3))
-print (nth_fib_lists([], [1, 2, 3], 4))
