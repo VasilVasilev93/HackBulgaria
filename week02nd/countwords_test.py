@@ -16,5 +16,11 @@ class Test_countwords(unittest.TestCase):
         result = count_words(input)
         self.assertEqual(output, result)
 
+    def test_if_dictionary_is_empty(self):
+        input = []
+        output = {}
+        result = count_words(input)
+        self.assertEqual(output, result)
+
 if __name__ == '__main__':
     unittest.main()

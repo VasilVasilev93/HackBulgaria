@@ -15,4 +15,4 @@ def prepare_meal(number):
         spam += "eggs"
     return spam
 
-print prepare_meal(45)
+print (prepare_meal(0))
