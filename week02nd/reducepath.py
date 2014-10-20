@@ -22,6 +22,8 @@ def space_deleting(mylist):
 
 
 def reduce_file_path(path):
+    if path == "":
+        return path
     path = list(path)
     count = 0
     symbol_sequence(path, "/")
