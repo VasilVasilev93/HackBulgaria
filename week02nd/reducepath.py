@@ -37,7 +37,7 @@ def reduce_file_path(path):
                         break
                     path[i] = ""
                     i -= 1
-            else:az 
+            else:
                 path[k] = ""
     path = (space_deleting(path))
     symbol_sequence(path, "/")
