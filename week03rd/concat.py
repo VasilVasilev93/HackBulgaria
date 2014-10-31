@@ -1,17 +1,31 @@
 # concat.py
-from sys import argv
+
+
+def concat(filestoconcat):
+    files = []
+    for i in range(0, len(filestoconcat)):
+        if filestoconcat[i] == __file__:
+            continue
+        files.append(filestoconcat[i])
+
+    outputFile = files[-1]
+    outputContent = ""
+    output = open(outputFile, "a")
+    for i in range(0, len(filestoconcat) - 1):
+        file = filestoconcat[i]
+        Input = open(file, "r")
+        toWrite = Input.read().split("\n")
+        output.write("\n".join(toWrite))
+        output.write("\n")
+        outputContent += ("\n".join(toWrite))
+        outputContent += ("\n")
+        Input.close()
+    output.close
+    return outputContent
 
 
 def main():
-    for arg in argv:
-        if arg == __file__:
-            continue
-        file1 = open(arg, "r")
-        with open("MEGAAATRON.txt", "a") as file3:
-            file3.write(file1.read())
-        file1.close()
-        file3.close()
+    return concat(["file.txt", "file1.txt", "megaaatron.txt"])
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
