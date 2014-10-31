@@ -9,6 +9,11 @@ class Dungeon():
     def __init__(self, filepath):
         self.filepath = filepath
 
+    def reinitialize_file(self, filepath, new_content):
+        f = open(filepath, "w+")
+        f.write("".join(new_content))
+        f.close()
+
     def print_map(self):
         f = open(self.filepath, "r+")
         map = f.read()
@@ -71,31 +76,30 @@ class Dungeon():
         pos = self.get_player_position(player)
         output = []
         player_indicator = self.get_player_indicator(self.spawnlist[player])
-        f = open(self.filepath, "r+")
+        f = open(self.filepath, "r")
         for line in f:
-            line_len = len(line)
+            line_len = len(line) - 1
             break
+        f = open(self.filepath, "r+")
         output += f.read()
-        print (output)
         f.close()
         if player_indicator in "".join(output):
-            print ("----------HERO FOUND ON MAP----------")
             for n, i in enumerate(output):
-                if i == player_indicator and n != len(output) - 1:
-                    print ("----------HERO MOVED ON MAP----------")
+                if i == player_indicator and i != '\n':
                     output[pos] = '.'
                     if direction == "up":
-                        output[pos-line_len] = player_indicator
+                        print (output[pos])
+                        output[pos-11] = player_indicator
+                        self.reinitialize_file(self.filepath, output)
                     elif direction == "down":
                         output[pos+line_len] = player_indicator
+                        self.reinitialize_file(self.filepath, output)
                     elif direction == "right":
                         output[pos+1] = player_indicator
-                    elif direction == "left":
+                        self.reinitialize_file(self.filepath, output)
+                    elif direction == "left" and n != 0:
                         output[pos-1] = player_indicator
+                        self.reinitialize_file(self.filepath, output)
                     return True
                     break
-
-        f = open(self.filepath, "w+")
-        f.write("".join(output))
-        f.close()
         return False
