@@ -42,5 +42,4 @@ class API():
 
 
 new = API('https://hackbulgaria.com/api/students/')
-new.list_all_courses()
 new.match_teams(8, 3, 2)
