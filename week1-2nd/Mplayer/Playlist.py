@@ -1,4 +1,3 @@
-import datetime
 import json
 from Song import Song
 
@@ -50,39 +49,26 @@ class Playlist():
             artists.append(self.songs[each].artist)
         return set(artists)
 
-    def str(self):
-        currentsongs = []
-        for each in range(0, len(self.songs)):
-            currentsongs.append(str(self.songs[each]))
-            print (str(currentsongs[each]))
-        return currentsongs
-
-    def jdefaultplaylist(self, o):
-        if isinstance(o, Playlist):
-            return str(o.str())
-        return o.__dict__
-
-    def jdefaultsong(self, o):
-        if isinstance(o, Song):
-            return str(o.str())
-        return o.__dict__
-
-    def save(self, file_name):
-        with open(file_name, mode='w', encoding='utf-8') as f:
-            for each in self.songs:
-                json.dump(each, f, default=self.jdefaultsong)
-                f.write('\n')
-            f.close()
+    def save(self, jsonfile):
+        songsdict = []
+        for item in self.songs:
+            songsdict.append(item.__dict__)
+        with open(jsonfile, "w") as f:
+            json.dump({"Name": self.name, "Songs": songsdict}, f,
+                      sort_keys=True, indent=4, separators=(',', ': '))
         return "Playlist: {}, saved succesfully.".format(self.name)
 
-    def __str__(self):
-        currentsongs = []
-        for each in range(0, len(self.songs)):
-            time = str(datetime.timedelta(seconds=self.songs[each].length))
-            song = "{} {} - {}".format(
-                self.songs[each].artist, self.songs[each].title, time)
-            currentsongs.append(song)
-        return str(currentsongs)
+    @staticmethod
+    def load(jsonfile):
+        with open(jsonfile) as f:
+            playlist_to_load = json.loads(f.read())
+
+        newPlaylist = Playlist(playlist_to_load["Name"])
+        for item in playlist_to_load["Songs"]:
+            newSong = Song(item["title"], item["artist"], item["album"],
+                           item["rate"], item["length"], item["bitrate"])
+            newPlaylist.add_song(newSong)
+        return newPlaylist
 
 new = Playlist("Test Playlist")
 song = Song("Title", "Artist", "Album", 5, 20, 120)
@@ -93,3 +79,4 @@ new.add_song(song1)
 new.add_song(song2)
 
 print (new.save('new.json'))
+print (Playlist.load('new.json'))

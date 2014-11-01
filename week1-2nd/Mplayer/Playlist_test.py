@@ -41,10 +41,6 @@ class Test_playlist(unittest.TestCase):
         artists = ["Artist", "Artist1"]
         self.assertSetEqual(self.testplaylist.show_artists(), set(artists))
 
-    def test_str(self):
-        songs = ["Artist Title - 0:00:20",
-                 "Artist Title1 - 0:00:20", "Artist1 Title2 - 0:00:20"]
-        self.assertEqual(str(self.testplaylist), str(songs))
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,3 +1,29 @@
-"Artist Title - 0:00:20"
-"Artist1 Title1 - 0:00:25"
-"Artist2 Title2 - 0:00:40"
+{
+    "Name": "Test Playlist",
+    "Songs": [
+        {
+            "album": "Album",
+            "artist": "Artist",
+            "bitrate": 120,
+            "length": 20,
+            "rate": 5,
+            "title": "Title"
+        },
+        {
+            "album": "Album",
+            "artist": "Artist1",
+            "bitrate": 120,
+            "length": 25,
+            "rate": 5,
+            "title": "Title1"
+        },
+        {
+            "album": "Album",
+            "artist": "Artist2",
+            "bitrate": 120,
+            "length": 40,
+            "rate": 5,
+            "title": "Title2"
+        }
+    ]
+}
