@@ -31,11 +31,14 @@ class DirectedGraph():
     def get_neighbors_for(self, node):
         if node not in self.points:
             print ("Node does not exist.")
-            return
+            return "Node does not exist."
         print ("Neighbors of %s: %s" % (node, self.points[node]))
         return self.points[node]
 
     def path_between(self, node_a, node_b):
+        if (node_a not in self.points or node_b not in self.points
+                or node_b not in self.links or node_a not in self.links):
+            return False
         if node_b in self.points[node_a]:
             return True
         else:
@@ -47,19 +50,19 @@ class DirectedGraph():
         print (str(self.links))
         return str(self.points)
 
-new = DirectedGraph()
-new.add_edge('2', '1')
-new.add_edge('2', '4')
-new.add_edge('2', '5')
-new.add_edge('1', '3')
-new.add_edge('5', '6')
-new.add_edge('6', '8')
-new.add_edge('6', '7')
-new.add_edge('7', '10')
-new.add_edge('7', '9')
-new.add_edge('9', '11')
+# new = DirectedGraph()
+# new.add_edge('2', '1')
+# new.add_edge('2', '4')
+# new.add_edge('2', '5')
+# new.add_edge('1', '3')
+# new.add_edge('5', '6')
+# new.add_edge('6', '8')
+# new.add_edge('6', '7')
+# new.add_edge('7', '10')
+# new.add_edge('7', '9')
+# new.add_edge('9', '11')
 
 
-print (new.path_between('2', '11'))
+# print (new.path_between('2', '11'))
 
-print (new.__str__())
+# print (new.__str__())
