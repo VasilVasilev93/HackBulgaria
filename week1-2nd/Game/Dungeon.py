@@ -90,7 +90,6 @@ class Dungeon():
             f.close()
 
     def move(self, player, direction):
-
         real_player = self.spawnlist[player]
         pos = self.get_player_position(player)
         output = []
@@ -98,87 +97,82 @@ class Dungeon():
         opposite_player_indicator = self.get_opposite_player_indicator(
             self.spawnlist[player])
         f = open(self.filepath, "r")
+        output += f.read()
         for line in f:
             line_len = len(line) - 1
             break
-        f = open(self.filepath, "r+")
-        output += f.read()
-        f.close()
-        if player_indicator in "".join(output):
-            for n, i in enumerate(output):
-                if i == player_indicator and i != '\n':
-                    if direction == "up" and output[pos - line_len - 1] != '#':
-                        if opposite_player_indicator == output[pos - line_len - 1]:
-                            enemy_index = (self.choose_enemy(
-                                output, player_indicator,
-                                opposite_player_indicator, output[pos - line_len - 1]))
-                            enemy = self.spawnlist[
-                                self.spawnedplayers[enemy_index]]
-                            enemyname = self.spawnedplayers[enemy_index]
-                            self.fight(output, real_player, enemy, player, enemyname, pos,
-                                       pos - line_len - 1, player_indicator,
-                                       self.filepath)
-                        else:
-                            output[pos] = '.'
-                            output[pos - 1] = player_indicator
-                            self.reinitialize_file(self.filepath, output)
 
-                    elif (direction == "down" and
-                          output[pos + line_len + 1] != '#'):
-                        if opposite_player_indicator == output[pos + line_len + 1]:
-                            enemy_index = (self.choose_enemy(
-                                output, player_indicator,
-                                opposite_player_indicator, output[pos + line_len + 1]))
-                            enemy = self.spawnlist[
-                                self.spawnedplayers[enemy_index]]
-                            enemyname = self.spawnedplayers[enemy_index]
-                            self.fight(output, real_player, enemy, player, enemyname, pos,
-                                       pos + line_len + 1, player_indicator,
-                                       self.filepath)
-                        else:
-                            output[pos] = '.'
-                            output[pos + line_len + 1] = player_indicator
-                            self.reinitialize_file(self.filepath, output)
+        for n, i in enumerate(output):
+            if i == player_indicator and i != '\n':
+                if direction == "up" and output[pos - line_len - 1] != '#':
+                    if opposite_player_indicator == output[pos - line_len - 1]:
+                        enemy_index = (self.choose_enemy(
+                            output, player_indicator,
+                            opposite_player_indicator, output[pos - line_len - 1]))
+                        enemy = self.spawnlist[
+                            self.spawnedplayers[enemy_index]]
+                        enemyname = self.spawnedplayers[enemy_index]
+                        self.fight(output, real_player, enemy, player, enemyname, pos,
+                                   pos - line_len - 1, player_indicator,
+                                   self.filepath)
 
-                    elif direction == "right" and output[pos + 1] != '#':
-                        if opposite_player_indicator == output[pos + 1]:
-                            enemy_index = (self.choose_enemy(
-                                output, player_indicator,
-                                opposite_player_indicator, output[pos + 1]))
-                            enemy = self.spawnlist[
-                                self.spawnedplayers[enemy_index]]
-                            enemyname = self.spawnedplayers[enemy_index]
-                            self.fight(output, real_player, enemy, player, enemyname, pos,
-                                       pos + 1, player_indicator,
-                                       self.filepath)
-                        else:
-                            if output[pos + 1] == 'W':
-                                ###############################################
-                                print (real_player.var)
-                                entities[0].equip_weapon(weapons[0])
-                                output[pos] = '.'
-                                output[pos + 1] = player_indicator
-                                self.reinitialize_file(self.filepath, output)
+                    output[pos] = '.'
+                    output[pos - 1] = player_indicator
 
-                    elif (direction == "left" and n != 0 and
-                          output[pos - 1] != '#'):
-                        if opposite_player_indicator == output[pos - 1]:
-                            enemy_index = (self.choose_enemy(
-                                output, player_indicator,
-                                opposite_player_indicator, output[pos - 1]))
-                            enemy = self.spawnlist[
-                                self.spawnedplayers[enemy_index]]
-                            enemyname = self.spawnedplayers[enemy_index]
-                            self.fight(output, real_player, enemy, player, enemyname, pos,
-                                       pos - 1, player_indicator,
-                                       self.filepath)
-                        else:
-                            output[pos] = '.'
-                            output[pos - 1] = player_indicator
-                            self.reinitialize_file(self.filepath, output)
+                elif (direction == "down" and
+                      output[pos + line_len + 1] != '#'):
+                    if opposite_player_indicator == output[pos + line_len + 1]:
+                        enemy_index = (self.choose_enemy(
+                            output, player_indicator,
+                            opposite_player_indicator, output[pos + line_len + 1]))
+                        enemy = self.spawnlist[
+                            self.spawnedplayers[enemy_index]]
+                        enemyname = self.spawnedplayers[enemy_index]
+                        self.fight(output, real_player, enemy, player, enemyname, pos,
+                                   pos + line_len + 1, player_indicator,
+                                   self.filepath)
 
-                    return True
-                    break
+                    output[pos] = '.'
+                    output[pos + line_len + 1] = player_indicator
+
+                elif direction == "right" and output[pos + 1] != '#':
+                    if opposite_player_indicator == output[pos + 1]:
+                        enemy_index = (self.choose_enemy(
+                            output, player_indicator,
+                            opposite_player_indicator, output[pos + 1]))
+                        enemy = self.spawnlist[
+                            self.spawnedplayers[enemy_index]]
+                        enemyname = self.spawnedplayers[enemy_index]
+                        self.fight(output, real_player, enemy, player, enemyname, pos,
+                                   pos + 1, player_indicator,
+                                   self.filepath)
+
+                    if output[pos + 1] == 'W':
+                        entities[0].equip_weapon(weapons[0])
+
+                    output[pos] = '.'
+                    output[pos + 1] = player_indicator
+
+                elif (direction == "left" and n != 0 and
+                      output[pos - 1] != '#'):
+                    if opposite_player_indicator == output[pos - 1]:
+                        enemy_index = (self.choose_enemy(
+                            output, player_indicator,
+                            opposite_player_indicator, output[pos - 1]))
+                        enemy = self.spawnlist[
+                            self.spawnedplayers[enemy_index]]
+                        enemyname = self.spawnedplayers[enemy_index]
+                        self.fight(output, real_player, enemy, player, enemyname, pos,
+                                   pos - 1, player_indicator,
+                                   self.filepath)
+
+                    output[pos] = '.'
+                    output[pos - 1] = player_indicator
+
+                self.reinitialize_file(self.filepath, output)
+
+                return True
+                break
         return False
 
     def choose_enemy(self, content, indicator1, indicator2, current_spot):
@@ -244,9 +238,8 @@ class Dungeon():
         weapons = []
         weapons.append(weapon)
         self.weapons[weapon_name] = weapon
-        #random_slot = randint(0, len(free_slots))
-        #output[free_slots[random_slot]] = 'W'
-        output[1] = 'W'
+        random_slot = randint(0, len(free_slots))
+        output[free_slots[random_slot]] = 'W'
         self.reinitialize_file(self.filepath, output)
 
 

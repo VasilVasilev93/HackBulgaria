@@ -9,11 +9,11 @@ class Test_Dungeon(unittest.TestCase):
 
     def setUp(self):
         self.filename = "map"
-        self.contents = """S.##......
+        self.contents = """S...S.....
 #.##..###.
 #.###.###.
 #.....###.
-###.#####S"""
+###.######"""
 
         with open(self.filename, "w+") as f:
             f.write(self.contents)
@@ -46,11 +46,11 @@ class Test_Dungeon(unittest.TestCase):
         with open(self.filename, "r+") as f:
             actual = f.read()
             f.close()
-        contents = """O.##......
+        contents = """O...S.....
 #.##..###.
 #.###.###.
 #.....###.
-###.#####S"""
+###.######"""
         self.assertEqual(actual, contents)
 
     def test_spawn_already_spawned_character(self):
@@ -78,18 +78,17 @@ class Test_Dungeon(unittest.TestCase):
         with open(self.filename, 'r+') as f:
             actual = f.read()
             f.close()
-        self.contents = """H.##......
+        self.contents = """H...O.....
 #.##..###.
 #.###.###.
 #.....###.
-###.#####O"""
+###.######"""
         self.assertEqual(actual, self.contents)
 
     def test_move_character(self):
         self.testDungeon.spawn("TestHero", self.hero)
         self.testDungeon.spawn("TestOrc", self.orc)
         result = self.testDungeon.move("TestHero", "right")
-        print ("HERE IS THE MAP")
         self.testDungeon.print_map()
         self.assertTrue(result)
 
@@ -100,25 +99,39 @@ class Test_Dungeon(unittest.TestCase):
         with open(self.filename, 'r+') as f:
             actual = f.read()
             f.close()
-        self.contents = """.H##......
+        self.contents = """.H..O.....
 #.##..###.
 #.###.###.
 #.....###.
-###.#####O"""
+###.######"""
         self.assertEqual(actual, self.contents)
 
     def test_move_orc_to_free_slot(self):
         self.testDungeon.spawn("TestHero", self.hero)
         self.testDungeon.spawn("TestOrc", self.orc)
-        self.testDungeon.move("TestOrc", "up")
+        self.testDungeon.move("TestOrc", "down")
         with open(self.filename, 'r+') as f:
             actual = f.read()
             f.close()
-        self.contents = """H.##......
+        self.contents = """H.........
+#.##O.###.
+#.###.###.
+#.....###.
+###.######"""
+        self.assertEqual(actual, self.contents)
+
+    def test_move_character_to_block(self):
+        self.testDungeon.spawn("TestHero", self.hero)
+        self.testDungeon.spawn("TestOrc", self.orc)
+        self.testDungeon.move("TestHero", "down")
+        with open(self.filename, 'r+') as f:
+            actual = f.read()
+            f.close()
+        self.contents = """H...O.....
 #.##..###.
 #.###.###.
-#.....###O
-###.#####."""
+#.....###.
+###.######"""
         self.assertEqual(actual, self.contents)
 
     def test_get_player_position(self):
@@ -126,7 +139,7 @@ class Test_Dungeon(unittest.TestCase):
         self.testDungeon.spawn("TestOrc", self.orc)
         result = self.testDungeon.get_player_position("TestOrc")
         self.testDungeon.print_map()
-        self.assertEqual(result, 53)
+        self.assertEqual(result, 4)
 
 
 if __name__ == '__main__':
