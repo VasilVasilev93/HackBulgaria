@@ -19,7 +19,7 @@ class Fight():
         (attacker, deffender) = self.get_starting_character()
 
         while self.Hero.is_alive() and self.Orc.is_alive():
-            damage = self.attacker.attack()
+            damage = attacker.attack()
             deffender.take_damage(damage)
             attacker, deffender = deffender, attacker
 
