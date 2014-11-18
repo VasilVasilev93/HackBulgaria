@@ -56,6 +56,6 @@ target/
 *.py~
 *.txt~
 *~
-*secret.f
+*secret
 =======
 >>>>>>> fdd19ba7d3c04a93ab1e5b32001afd4af64aeedd
