@@ -62,6 +62,21 @@ def logged_menu(logged_user):
             new_pass = getpass.getpass(prompt='Password: ')
             sql_manager.change_pass(new_pass, logged_user)
 
+        elif command == 'deposit':
+            amount = input("Enter amount: ")
+            if logged_user.deposit(float(amount)):
+                new_balance = logged_user.get_balance()
+                sql_manager.deposit(logged_user, new_balance)
+
+        elif command == 'test':
+            sql_manager.test_func(logged_user)
+
+        elif command == 'withdraw':
+            amount = input("Enter amount: ")
+            if logged_user.withdraw(float(amount)):
+                new_balance = logged_user.get_balance()
+                sql_manager.withdraw(logged_user, new_balance)
+
         elif command == 'change-message':
             new_message = input("Enter your new message: ")
             sql_manager.change_message(new_message, logged_user)

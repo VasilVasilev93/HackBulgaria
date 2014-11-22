@@ -2,7 +2,6 @@ import requests
 import sqlite3
 import smtplib
 import hashlib
-import binascii
 import getpass
 from random import randint
 from datetime import datetime, timedelta
@@ -97,7 +96,7 @@ def send_email_with_new_password(email, new_password):
         #print ("Successfully sent the mail")
         return True
     except:
-        #print ("failed to send mail")
+        print ("Failed to send mail(Email may not exist)")
         return False
 
 
@@ -112,10 +111,7 @@ def reset_password(username):
         send_email_with_new_password(email, password)
         new_password = getpass.getpass(prompt=printmsg)
         user_password = get_user_password(username)
-        print ("current")
-        print (new_password)
-        print ("nextpass")
-        print (user_password)
+
         if str(new_password) == str(user_password):
             return special_login(username)
 
@@ -197,7 +193,7 @@ def generate_random_hash():
     random_number = randint(0, 100000)
 
     dk = hashlib.pbkdf2_hmac('sha1', b'password', b'salt', random_number)
-    return binascii.hexlify(dk)
+    return hashlib.sha1(dk).hexdigest()
 
 
 def register(username, password, email):
@@ -307,6 +303,37 @@ def special_login(username):
         return Client(user[0], user[1], user[2], user[3])
     else:
         return False
+
+
+def deposit(logged_user, balance):
+    deposit_query = ''' UPDATE clients SET balance = ? WHERE id = ? '''
+    cursor.execute(deposit_query, (balance, logged_user.get_id()))
+    conn.commit()
+
+
+def withdraw(logged_user, balance):
+    withdraw_query = ''' UPDATE clients SET balance = ? WHERE id = ? '''
+    cursor.execute(withdraw_query, (balance, logged_user.get_id()))
+    conn.commit()
+
+
+def get_tan(logged_user, tan_codes):
+    codes_count = len(tan_codes)
+    if codes_count > 0 and codes_count <= 10:
+        print ("You have %s codes remaining." % codes_count)
+        return False
+    while (codes_count != 10):
+        random_number = randint(0, 100000)
+
+        hash1 = hashlib.pbkdf2_hmac('sha1', b'tan_code', b'salt', random_number)
+        hash2 = hashlib.pbkdf2_hmac('sha1', b'tan_code', b'salt', random_number)
+        tan_code = hashlib.sha1(hash1).hexdigest() + hashlib.sha1(hash2).hexdigest()
+        tan_codes.append(tan_code)
+    return tan_codes
+
+
+def save_tan_codes(tan_codes):
+    pass
 
 
 def login(username, password):
