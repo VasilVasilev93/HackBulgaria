@@ -27,6 +27,14 @@ def create_clients_table():
     cursor.execute(create_query)
 
 
+def create_tan_table():
+    create_tan = '''CREATE TABLE IF NOT EXISTS
+        tan_codes(id INTEGER PRIMARY KEY,
+                user_ID INTEGER REFERENCES clients(id),
+                code TEXT UNIQUE)'''
+    cursor.execute(create_tan)
+
+
 def create_sessions_table():
     create_sessions = '''CREATE TABLE IF NOT EXISTS
         sessions(id INTEGER REFERENCES clients(id),
@@ -120,6 +128,49 @@ def reset_password(username):
         return False
 
 
+def send_email_with_tan_codes(email, codes):
+    password = __get_pass('secret')
+
+    gmail_user = "vasilvasilev093@gmail.com"
+    gmail_pwd = password
+    FROM = 'vasilvasilev093@gmail.com'
+    TO = [email]
+    SUBJECT = "Your TAN codes for T-bank"
+    TEXT = "These are your TAN codes:\n{}".format(codes + '\n')
+
+    message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
+            """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.ehlo()
+        server.starttls()
+        server.login(gmail_user, gmail_pwd)
+        server.sendmail(FROM, TO, message)
+        server.close()
+        #print ("Successfully sent the mail")
+        return True
+    except:
+        print ("Failed to send mail(Email may not exist)")
+        return False
+
+
+def send_tan_codes(logged_user, codes):
+    printmsg = "TAN codes sent successfully! Check your mailbox."
+    email = get_email(logged_user)
+    if send_email_with_tan_codes(email, codes):
+        print(printmsg)
+        return True
+
+
+def get_email(logged_user):
+    get_email_from_id = ''' SELECT email FROM clients WHERE id = ?'''
+    result = cursor.execute(get_email_from_id, (logged_user.get_id(),))
+    for row in result:
+        email = row
+    email = email[0]
+    return email
+
+
 def containsSpecial(password):
     special_symbols = "!@#$%^&*()_+"
     for symbol in special_symbols:
@@ -174,8 +225,8 @@ def is_email_used(email):
 
 
 def get_email_of_user(username):
-    email_sql = ''' SELECT email FROM clients '''
-    result = cursor.execute(email_sql)
+    email_sql = ''' SELECT email FROM clients WHERE username = ?'''
+    result = cursor.execute(email_sql, (username,))
     for row in result:
         email = row
     email = email[0]
@@ -187,6 +238,17 @@ def hash_password(password):
     password = (hashlib.sha1(password).hexdigest())
 
     return password
+
+
+def validate_password(logged_user, given_password):
+    validate_query = ''' SELECT password FROM clients WHERE id = ? '''
+    result = cursor.execute(validate_query, (logged_user.get_id(),))
+    for row in result:
+        password = row[0]
+    given_password = hash_password(given_password)
+    if password != given_password:
+        return False
+    return True
 
 
 def generate_random_hash():
@@ -317,23 +379,55 @@ def withdraw(logged_user, balance):
     conn.commit()
 
 
-def get_tan(logged_user, tan_codes):
-    codes_count = len(tan_codes)
-    if codes_count > 0 and codes_count <= 10:
+def get_tan(logged_user):
+    tan_codes = []
+    get_codes = ''' SELECT COUNT(*) from tan_codes WHERE user_ID = ? '''
+    result = cursor.execute(get_codes, (logged_user.get_id(),))
+    result = cursor.fetchone()
+    codes_count = result[0]
+
+    if codes_count > 0:
         print ("You have %s codes remaining." % codes_count)
         return False
-    while (codes_count != 10):
-        random_number = randint(0, 100000)
+    else:
+        for count in range(0, 10 - codes_count):
+            random_number = randint(0, 100000)
 
-        hash1 = hashlib.pbkdf2_hmac('sha1', b'tan_code', b'salt', random_number)
-        hash2 = hashlib.pbkdf2_hmac('sha1', b'tan_code', b'salt', random_number)
-        tan_code = hashlib.sha1(hash1).hexdigest() + hashlib.sha1(hash2).hexdigest()
-        tan_codes.append(tan_code)
-    return tan_codes
+            hash1 = hashlib.pbkdf2_hmac('sha1', b'tan_code', b'salt', random_number)
+            hash2 = hashlib.pbkdf2_hmac('sha1', b'tan_code', b'salt', random_number)
+            tan_code = hashlib.sha1(hash1).hexdigest() + hashlib.sha1(hash2).hexdigest()
+            tan_codes.append(tan_code)
+            save_tan_code(logged_user, tan_code)
+    codes = "\n".join(tan_codes)
+    send_tan_codes(logged_user, codes)
+    tan_codes = []
 
 
-def save_tan_codes(tan_codes):
-    pass
+def get_id_tan(logged_user, tan_code):
+    tanID = None
+    tan_id = ''' SELECT id FROM tan_codes WHERE code = ? and user_ID = ? '''
+    result = cursor.execute(tan_id, (tan_code, logged_user.get_id()))
+    for row in result:
+        tanID = row[0]
+    return tanID
+
+
+def use_tan(logged_user, tan_code):
+    code_id = get_id_tan(logged_user, tan_code)
+    if code_id is not None:
+        use_code = '''DELETE FROM tan_codes WHERE id = ?'''
+        cursor.execute(use_code, (code_id,))
+        conn.commit()
+        return True
+    else:
+        print("Invalid TAN code.")
+        return False
+
+
+def save_tan_code(logged_user, tan_code):
+    save_tan = ''' INSERT INTO tan_codes (user_ID, code) values (?, ?) '''
+    cursor.execute(save_tan, (logged_user.get_id(), tan_code))
+    conn.commit()
 
 
 def login(username, password):

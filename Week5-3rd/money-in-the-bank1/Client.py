@@ -31,7 +31,7 @@ class Client():
             print ("You cannot withdraw more money than your current balance.")
             return False
         self.__balance -= amount
-        return self.__balance
+        return True
 
     def get_tan_codes(self):
         return self.__tan_codes
