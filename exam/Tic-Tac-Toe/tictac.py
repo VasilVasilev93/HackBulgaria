@@ -1,20 +1,8 @@
-# Tic-Tac-Toe
-# Plays the game of tic-tac-toe against a human opponent
-
-# global constants
 X = "X"
 O = "O"
 EMPTY = " "
 DRAW = "DRAW"
 NUM_SQUARES = 9
-
-
-def ask_yes_no(question):
-    """Ask a yes or no question."""
-    response = None
-    while response not in ("y", "n"):
-        response = input(question).lower()
-    return response
 
 
 def ask_move(question, low, high):
@@ -122,8 +110,7 @@ def next_turn(turn):
         return X
 
 
-def congrat_winner(the_winner, computer, human):
-    """Congratulate the winner."""
+def display_winner(the_winner, computer, human):
     if the_winner != DRAW:
         print(the_winner, "won!\n")
     else:
@@ -153,7 +140,7 @@ def main():
         turn = next_turn(turn)
 
     the_winner = determine_winner(board)
-    congrat_winner(the_winner, computer, human)
+    display_winner(the_winner, computer, human)
 
 
 if __name__ == '__main__':
